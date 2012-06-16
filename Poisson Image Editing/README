@@ -1,0 +1,12 @@
+This code has been written in C++ using OpenCV library. It has been tested on Ubuntu 12.04 64 bit linux platform.
+
+Compile: ./build.sh
+(Make sure that OpenCV-2.4 is installed on your platform)
+
+Usage: ./poisson <input image>
+
+Output:
+-> Original Image
+-> Reconstructed Image
+
+
