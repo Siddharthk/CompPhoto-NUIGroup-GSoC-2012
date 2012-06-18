@@ -15,12 +15,12 @@ Output:
 Selecting Region of Interest (ROI):
 
 Step 1:
--> In the source image, select the region of interest by pressing left mouse button. A rectangular ROI will be created.
--> To reset the region selected, press right mouse button.
+-> In the source image, select the region of interest by left click mouse button. A rectangular ROI will be created.
+-> To reset the region selected, right click mouse button.
 
 Step 2:
--> In the destination image, select the ROI where you want to place in the image by pressing left mouse button.
--> To get the cloned result, press the right mouse button.
+-> In the destination image, select the ROI where you want to place in the image by left clicking mouse button.
+-> To get the cloned result, click the right mouse button.
 
 NOTE:
 
