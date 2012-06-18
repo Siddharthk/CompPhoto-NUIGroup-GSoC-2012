@@ -26,8 +26,7 @@ NOTE:
 
 Poisson Image Editing is a technique for "seamlessly blending" two images together fully automatically.
 The algorithm assumes that the color of the source image is close to that of the target. 
-This assumption means that when the colors don't match, the source image color gets tinted 
-toward the color of the target image.
+This assumption means that when the colors don't match, the source image color gets tinted toward the color of the target image.
 
 Reference:
 
