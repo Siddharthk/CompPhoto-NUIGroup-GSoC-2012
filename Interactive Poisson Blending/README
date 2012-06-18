@@ -1,0 +1,37 @@
+This code has been written in C++ using OpenCV library. It has been tested on Ubuntu 12.04 64 bit linux platform.
+
+Compile: ./build.sh
+(Make sure that OpenCV-2.4 is installed on your platform)
+
+Usage: ./clone <source image> <destination image>
+
+Input:
+-> Source Image
+-> Destination Image
+
+Output:
+-> Cloned Image
+
+Selecting Region of Interest (ROI):
+
+Step 1:
+-> In the source image, select the region of interest by pressing left mouse button. A rectangular ROI will be created.
+-> To reset the region selected, press right mouse button.
+
+Step 2:
+-> In the destination image, select the ROI where you want to place in the image by pressing left mouse button.
+-> To get the cloned result, press the right mouse button.
+
+NOTE:
+
+Poisson Image Editing is a technique for "seamlessly blending" two images together fully automatically.
+The algorithm assumes that the color of the source image is close to that of the target. 
+This assumption means that when the colors don't match, the source image color gets tinted 
+toward the color of the target image.
+
+Reference:
+
+http://cs.engr.uky.edu/~jacobs/classes/2010_photo/readings/PoissonImageEditing.pdf
+
+
+
