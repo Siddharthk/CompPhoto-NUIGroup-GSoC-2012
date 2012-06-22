@@ -1,0 +1,38 @@
+This code has been written in C++ using OpenCV library. It has been tested on Ubuntu 12.04 64 bit linux platform.
+
+Compile: ./build.sh
+(Make sure that OpenCV-2.4 is installed on your platform)
+
+Usage: ./poisson <source image> <destination image>
+
+Input:
+-> Source Image
+-> Destination Image
+
+Output:
+-> Cloned Image
+
+Selecting Region of Interest (ROI):
+
+Step 1:
+-> In the source image, select the region of interest by left click mouse button. A rectangular ROI will be created.
+-> To reset the region selected, right click mouse button.
+
+Step 2:
+-> In the destination image, select the ROI where you want to place in the image by left clicking mouse button.
+-> To get the cloned result, click the right mouse button.
+
+Description:
+
+Mixed seamless cloning based on a loose selection proves effective when inserting objects with holes.
+
+Mixed seamless cloning facilitates the transfer of partly transparent objects.
+The non-linear mixing of gradient fields picks out whichever of source or destination structure is the more salient at each location.
+
+This mixed seamless cloning is also useful when adding one object from a source image very close to another object in the destination image.
+
+
+
+
+
+
