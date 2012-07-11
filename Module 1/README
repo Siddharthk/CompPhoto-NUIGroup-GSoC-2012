@@ -3,14 +3,14 @@
 Compile: ./build.sh
 (Make sure that OpenCV-2.4 is installed on your platform)
 
-----------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
 
 Usage: ./poisson
 
 Example Output:
 
  Poisson Image Editing
-------------------------------
+------------------------
 Options: 
 
 1) Poisson Blending 
@@ -25,8 +25,7 @@ Press number 1-6 to choose from above techniques: 1
 Enter Source Image: img1.jpg
 Enter Destination Image: img2jpg
 
-"The source and the destination images will be loaded. Now select Region of Interest(ROI) from the source image 
-and paste it to the destination image".
+"The source and the destination images will be loaded. Now select Region of Interest(ROI) from the source image and paste it to the destination image".
 
 Selecting Region of Interest (ROI):
 
@@ -40,7 +39,7 @@ Step 2:
 
 Result: The cloned image will be displayed and saved. 
 
-----------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
 
 Description of techniques:
 
@@ -53,45 +52,36 @@ Usage: Requires Source and Destination images.
 -> Mixed seamless cloning based on a loose selection proves effective when inserting objects with holes.
 
 -> Mixed seamless cloning facilitates the transfer of partly transparent objects.
-The non-linear mixing of gradient fields picks out whichever of source or destination structure 
-is the more salient at each location.
+The non-linear mixing of gradient fields picks out whichever of source or destination structure is the more salient at each location.
 
--> This mixed seamless cloning is also useful when adding one object from a source image very close to another object 
-in the destination image.
+-> This mixed seamless cloning is also useful when adding one object from a source image very close to another object in the destination image.
 
 Usage: Requires Source and Destination images.
 
 3) Local Color Change
-Poisson editing is a powerful tool for manipulating colors. Given an original color image, two differently colored 
-versions of this image can be mixed seamlessly.
+Poisson editing is a powerful tool for manipulating colors. Given an original color image, two differently colored versions of this image can be mixed seamlessly.
 
 Usage: Requires Source image only(color changes done in source image).
 
 4) Local Illumination change
-Applying an appropriate nonlinear transformation to the gradient field inside the selection and then integrating 
-back with a Poisson solver, modifies locally the apparent illumination of an image. This is useful to highlight 
-underexposed foreground objects or to reduce specular reflections.
+Applying an appropriate nonlinear transformation to the gradient field inside the selection and then integrating back with a Poisson solver, modifies locally the apparent illumination of an image. This is useful to highlight underexposed foreground objects or to reduce specular reflections.
 
 Usage: Requires Source image only(illumination change done in source image)
 
 5) Monochrome Transfer
-In some cases, such as texture transfer, the part of the source color remaining after seamless cloning might 
-be undesirable. This is fixed by turning the source image monochrome beforehand.
+In some cases, such as texture transfer, the part of the source color remaining after seamless cloning might be undesirable. This is fixed by turning the source image monochrome beforehand.
 
 Usage: Requires Source and Destination images.
 
 6) Texture Flattening
-By retaining only the gradients at edge locations, before integrating with the Poisson solver, one washes 
-out the texture of the selected region, giving its contents a flat aspect.
+By retaining only the gradients at edge locations, before integrating with the Poisson solver, one washes out the texture of the selected region, giving its contents a flat aspect.
 
 Usage: Requires Source image only.
 
 
 NOTE:
 
-The algorithm assumes that the color of the source image is close to that of the destination. 
-This assumption means that when the colors don't match, the source image color gets tinted 
-toward the color of the destination image.
+The algorithm assumes that the color of the source image is close to that of the destination. This assumption means that when the colors don't match, the source image color gets tinted toward the color of the destination image.
 
 Reference:
 
