@@ -1,0 +1,49 @@
+Description:
+
+Filtering is the fundamental operation in image and video processing.
+
+Edge-preserving smoothing filters are used in different applications.
+
+The most popular filters in this class are anisotropic diffusion and the bilateral filter.
+
+Anisotropic diffusion requires an iterative solver while bilateral filtering uses 
+a space-varying weighting function computed at a space of higher dimensionality than the 
+signal being filtered. As a result, such filters have high computational costs.
+
+The technique implemented here efficiently performs edge-preserving filtering of images and videos 
+that addresses the main limitations of previous techniques.
+
+This technique efficiently implements 2D edge-preserving
+smoothing filters as a sequence of 1D filtering operations. 
+The resulting 2D filters correctly handle color images.
+
+Its processing time is also linear in the number of pixels
+and is independent of the filter parameters, allowing for realtime computations.
+
+-----------------------------------------------------------------------------------------------------------------
+﻿
+This code has been written in C++ using OpenCV library. It has been tested on Ubuntu 12.04 64 bit linux platform.
+
+Compile: ./build.sh
+(Make sure that OpenCV-2.4 is installed on your platform)
+
+Usage: ./filter 
+
+Example Output:
+
+Domain aware edge filter
+--------------------------
+Options: 
+
+1) Edge Preserve Smoothing
+
+Press number 1-6 to choose from above techniques: 1
+
+Enter Image: images/statue.png
+
+sigma_s(default val: 60): 60
+sigma_r(default val: .45): .45
+
+Output: Smoothened Image
+
+sigma_s and sigma_r are gaussian spatial and range filter values.
