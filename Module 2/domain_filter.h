@@ -18,7 +18,7 @@ class Recursive_Filter : public Domain_Filter
 {
 	public:
 		void compute(Mat &O, Mat &dHdx, float sigma_h);
-		void RecursiveFilter(const IplImage *img, float sigma_s, float sigma_r);
+		void RecursiveFilter(const IplImage *img, Mat &res, float sigma_s, float sigma_r);
 		
 
 };

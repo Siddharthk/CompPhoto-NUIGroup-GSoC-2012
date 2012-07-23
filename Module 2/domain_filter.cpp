@@ -110,7 +110,7 @@ void Recursive_Filter::compute(Mat &O, Mat &horiz, float sigma_h)
 
 }
 
-void Recursive_Filter::RecursiveFilter(const IplImage *img, float sigma_s, float sigma_r)
+void Recursive_Filter::RecursiveFilter(const IplImage *img, Mat &res, float sigma_s, float sigma_r)
 {
 
 	int iterations = 3;
@@ -210,12 +210,13 @@ void Recursive_Filter::RecursiveFilter(const IplImage *img, float sigma_s, float
 
 	}
 
+	res = O.clone();
 
-	imshow("Filtered Image",O);
+//	imshow("Filtered Image",O);
 
-	convertScaleAbs(O, final, 255,0);
+//	convertScaleAbs(O, final, 255,0);
 
-	imwrite("result.jpg",final);
+//	imwrite("result.jpg",final);
 
 }
 
