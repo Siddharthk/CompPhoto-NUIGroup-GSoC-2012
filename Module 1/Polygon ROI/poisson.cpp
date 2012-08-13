@@ -91,6 +91,9 @@ void Blending::dst(double *gtest, double *gfinal,int h,int w)
 	Mat temp = Mat(2*h+2,1,CV_32F);
 	Mat res  = Mat(h,1,CV_32F);
 
+	Mat planes[] = {Mat_<float>(temp), Mat::zeros(temp.size(), CV_32F)};
+
+	Mat complex1;
 	int p=0;
 	for(int i=0;i<w;i++)
 	{
@@ -110,9 +113,6 @@ void Blending::dst(double *gtest, double *gfinal,int h,int w)
 			temp.at<float>(r,0) = -1*gtest[idx];
 		}
 		
-		Mat planes[] = {Mat_<float>(temp), Mat::zeros(temp.size(), CV_32F)};
-
-		Mat complex1;
 		merge(planes, 2, complex1);
 
 		dft(complex1,complex1,0,0);
@@ -138,6 +138,11 @@ void Blending::dst(double *gtest, double *gfinal,int h,int w)
 		}
 		p++;
 	}
+
+	temp.release();
+	res.release();
+	planes[0].release();
+	planes[1].release();
 
 }
 
@@ -177,6 +182,8 @@ void Blending::transpose(double *mat, double *mat_t,int h,int w)
 			idx = i*tmp_t.size().width + j;
 			mat_t[idx] = tmp_t.at<float>(i,j);
 		}
+
+	tmp.release();
 
 }
 void Blending::poisson_solver(const IplImage *img, IplImage *gxx , IplImage *gyy, Mat &result)
@@ -223,6 +230,9 @@ void Blending::poisson_solver(const IplImage *img, IplImage *gxx , IplImage *gyy
 			diff.at<float>(i,j) = (CV_IMAGE_ELEM(lap,float,i,j) - f_bp[idx]);
 		}
 	}
+
+	cvReleaseImage(&lap);
+
 	double *gtest = new double[(h-2)*(w-2)];
 	for(int i = 0 ; i < h-2;i++)
 	{
@@ -233,6 +243,8 @@ void Blending::poisson_solver(const IplImage *img, IplImage *gxx , IplImage *gyy
 			
 		}
 	}
+
+	diff.release();
 	///////////////////////////////////////////////////// Find DST  /////////////////////////////////////////////////////
 
 	double *gfinal = new double[(h-2)*(w-2)];
@@ -318,6 +330,15 @@ void Blending::poisson_solver(const IplImage *img, IplImage *gxx , IplImage *gyy
 		}
 	}
 
+	delete [] gfinal;
+	delete [] gfinal_t;
+	delete [] denom;
+	delete [] f3;
+	delete [] f3_t;
+	delete [] img_d;
+	delete [] gtest;
+	delete [] f_bp;
+
 }
 
 IplImage* Normal_Blending::normal_blend(IplImage *I, IplImage *mask, IplImage *wmask, int num)
@@ -331,16 +352,10 @@ IplImage* Normal_Blending::normal_blend(IplImage *I, IplImage *mask, IplImage *w
 	IplImage *sgx  = cvCreateImage(cvGetSize(mask), 32, 3);
 	IplImage *sgy  = cvCreateImage(cvGetSize(mask), 32, 3);
 
-	IplImage *S    = cvCreateImage(cvGetSize(I), 8, 3);
 	IplImage *ero  = cvCreateImage(cvGetSize(I), 8, 1);
 	IplImage *res  = cvCreateImage(cvGetSize(I), 8, 3);
 
-	cvZero(S);
 	cvZero(res);
-
-	IplImage *O    = cvCreateImage(cvGetSize(I), 8, 3);
-	IplImage *error= cvCreateImage(cvGetSize(I), 8, 3);
-
 
 	int w = I->width;
 	int h = I->height;
@@ -427,8 +442,15 @@ IplImage* Normal_Blending::normal_blend(IplImage *I, IplImage *mask, IplImage *w
 					CV_IMAGE_ELEM(sry32,float,i,j*channel+c) =
 						(CV_IMAGE_ELEM(sgy,float,i,j*channel+c)*CV_IMAGE_ELEM(smask,float,i,j));
 				}
+		
+		cvReleaseImage(&gray);
+		cvReleaseImage(&gray8);
 
 	}
+
+	cvReleaseImage(&smask);
+	cvReleaseImage(&sgx);
+	cvReleaseImage(&sgy);
 
 	cvNot(ero,ero);
 
@@ -451,6 +473,11 @@ IplImage* Normal_Blending::normal_blend(IplImage *I, IplImage *mask, IplImage *w
 					(CV_IMAGE_ELEM(gry,float,i,j*channel+c)*CV_IMAGE_ELEM(smask1,float,i,j));
 			}
 
+	cvReleaseImage(&smask1);
+	cvReleaseImage(&grx);
+	cvReleaseImage(&gry);
+	cvReleaseImage(&ero);
+
 
 	IplImage* fx = cvCreateImage(cvGetSize(res),32,3);
 	IplImage* fy = cvCreateImage(cvGetSize(res),32,3);
@@ -465,23 +492,35 @@ IplImage* Normal_Blending::normal_blend(IplImage *I, IplImage *mask, IplImage *w
 					(CV_IMAGE_ELEM(gry32,float,i,j*channel+c)+CV_IMAGE_ELEM(sry32,float,i,j*channel+c));
 			}
 
+	cvReleaseImage(&srx32);
+	cvReleaseImage(&grx32);
+	cvReleaseImage(&sry32);
+	cvReleaseImage(&gry32);
+	cvReleaseImage(&res);
+
 	IplImage *gxx  = cvCreateImage(cvGetSize(I), 32, 3);
 	IplImage *gyy  = cvCreateImage(cvGetSize(I), 32, 3);
 
 	lapx(fx,gxx);
 	lapy(fy,gyy);
 
+	cvReleaseImage(&fx);
+	cvReleaseImage(&fy);
+
 	IplImage *rx_channel = cvCreateImage(cvGetSize(I), IPL_DEPTH_32F, 1 );
 	IplImage *gx_channel = cvCreateImage(cvGetSize(I), IPL_DEPTH_32F, 1 );
 	IplImage *bx_channel = cvCreateImage(cvGetSize(I), IPL_DEPTH_32F, 1 );
 
 	cvCvtPixToPlane(gxx, rx_channel, gx_channel, bx_channel,0);
+	cvReleaseImage(&gxx);
 
 	IplImage *ry_channel = cvCreateImage(cvGetSize(I), IPL_DEPTH_32F, 1 );
 	IplImage *gy_channel = cvCreateImage(cvGetSize(I), IPL_DEPTH_32F, 1 );
 	IplImage *by_channel = cvCreateImage(cvGetSize(I), IPL_DEPTH_32F, 1 );
 
 	cvCvtPixToPlane(gyy, ry_channel, gy_channel, by_channel,0);
+
+	cvReleaseImage(&gyy);
 
 	IplImage *r_channel = cvCreateImage(cvGetSize(I), 8, 1 );
 	IplImage *g_channel = cvCreateImage(cvGetSize(I), 8, 1 );
@@ -513,6 +552,20 @@ IplImage* Normal_Blending::normal_blend(IplImage *I, IplImage *mask, IplImage *w
 			CV_IMAGE_ELEM(final,uchar,i,j*3+2) = resultb.at<uchar>(i,j);
 		}
 
+	resultr.release();
+	resultg.release();
+	resultb.release();
+
+	cvReleaseImage(&r_channel);
+	cvReleaseImage(&rx_channel);
+	cvReleaseImage(&ry_channel);
+	cvReleaseImage(&g_channel);
+	cvReleaseImage(&gx_channel);
+	cvReleaseImage(&gy_channel);
+	cvReleaseImage(&b_channel);
+	cvReleaseImage(&bx_channel);
+	cvReleaseImage(&by_channel);
+
 	return final;
 
 
@@ -529,16 +582,10 @@ IplImage* Local_color_change::color_change(IplImage *I, IplImage *mask, IplImage
 	IplImage *sgx  = cvCreateImage(cvGetSize(mask), 32, 3);
 	IplImage *sgy  = cvCreateImage(cvGetSize(mask), 32, 3);
 
-	IplImage *S    = cvCreateImage(cvGetSize(I), 8, 3);
 	IplImage *ero  = cvCreateImage(cvGetSize(I), 8, 1);
 	IplImage *res  = cvCreateImage(cvGetSize(I), 8, 3);
 
-	cvZero(S);
 	cvZero(res);
-
-	IplImage *O    = cvCreateImage(cvGetSize(I), 8, 3);
-	IplImage *error= cvCreateImage(cvGetSize(I), 8, 3);
-
 
 	int w = I->width;
 	int h = I->height;
@@ -682,8 +729,37 @@ IplImage* Local_color_change::color_change(IplImage *I, IplImage *mask, IplImage
 			CV_IMAGE_ELEM(final,uchar,i,j*3+2) = resultb.at<uchar>(i,j);
 		}
 
-	return final;
+	resultr.release();
+	resultg.release();
+	resultb.release();
 
+	cvReleaseImage(&smask);
+	cvReleaseImage(&smask1);
+	cvReleaseImage(&grx);
+	cvReleaseImage(&gry);
+	cvReleaseImage(&grx32);
+	cvReleaseImage(&gry32);
+	cvReleaseImage(&res);
+	cvReleaseImage(&fx);
+	cvReleaseImage(&fy);
+	cvReleaseImage(&sgx);
+	cvReleaseImage(&sgy);
+	cvReleaseImage(&srx32);
+	cvReleaseImage(&sry32);
+	cvReleaseImage(&gxx);
+	cvReleaseImage(&gyy);
+	cvReleaseImage(&factor);
+	cvReleaseImage(&r_channel);
+	cvReleaseImage(&rx_channel);
+	cvReleaseImage(&ry_channel);
+	cvReleaseImage(&g_channel);
+	cvReleaseImage(&gx_channel);
+	cvReleaseImage(&gy_channel);
+	cvReleaseImage(&b_channel);
+	cvReleaseImage(&bx_channel);
+	cvReleaseImage(&by_channel);
+
+	return final;
 
 }
 
@@ -698,16 +774,10 @@ IplImage* Local_illum_change::illum_change(IplImage *I, IplImage *mask, IplImage
 	IplImage *sgx  = cvCreateImage(cvGetSize(mask), 32, 3);
 	IplImage *sgy  = cvCreateImage(cvGetSize(mask), 32, 3);
 
-	IplImage *S    = cvCreateImage(cvGetSize(I), 8, 3);
 	IplImage *ero  = cvCreateImage(cvGetSize(I), 8, 1);
 	IplImage *res  = cvCreateImage(cvGetSize(I), 8, 3);
 
-	cvZero(S);
 	cvZero(res);
-
-	IplImage *O    = cvCreateImage(cvGetSize(I), 8, 3);
-	IplImage *error= cvCreateImage(cvGetSize(I), 8, 3);
-
 
 	int w = I->width;
 	int h = I->height;
@@ -860,6 +930,37 @@ IplImage* Local_illum_change::illum_change(IplImage *I, IplImage *mask, IplImage
 			CV_IMAGE_ELEM(final,uchar,i,j*3+2) = resultb.at<uchar>(i,j);
 		}
 
+	resultr.release();
+	resultg.release();
+	resultb.release();
+
+	cvReleaseImage(&smask);
+	cvReleaseImage(&smask1);
+	cvReleaseImage(&grx);
+	cvReleaseImage(&gry);
+	cvReleaseImage(&grx32);
+	cvReleaseImage(&gry32);
+	cvReleaseImage(&res);
+	cvReleaseImage(&fx);
+	cvReleaseImage(&fy);
+	cvReleaseImage(&sgx);
+	cvReleaseImage(&sgy);
+	cvReleaseImage(&srx32);
+	cvReleaseImage(&sry32);
+	cvReleaseImage(&gxx);
+	cvReleaseImage(&gyy);
+	cvReleaseImage(&mag);
+	cvReleaseImage(&r_channel);
+	cvReleaseImage(&rx_channel);
+	cvReleaseImage(&ry_channel);
+	cvReleaseImage(&g_channel);
+	cvReleaseImage(&gx_channel);
+	cvReleaseImage(&gy_channel);
+	cvReleaseImage(&b_channel);
+	cvReleaseImage(&bx_channel);
+	cvReleaseImage(&by_channel);
+
+
 	return final;
 
 
@@ -873,9 +974,7 @@ IplImage* Texture_flat::tex_flattening(IplImage *I)
 	IplImage *grx  = cvCreateImage(cvGetSize(I), 32, 3);
 	IplImage *gry  = cvCreateImage(cvGetSize(I), 32, 3);
 
-	IplImage *O    = cvCreateImage(cvGetSize(I), 8, 3);
 	IplImage *out  = cvCreateImage(cvGetSize(I), IPL_DEPTH_8U, 1);
-	IplImage *error= cvCreateImage(cvGetSize(I), 8, 3);
 
 	IplImage *final = cvCreateImage(cvGetSize(I), 8, 3);
 
@@ -947,6 +1046,25 @@ IplImage* Texture_flat::tex_flattening(IplImage *I)
 			CV_IMAGE_ELEM(final,uchar,i,j*3+1) = resultg.at<uchar>(i,j);
 			CV_IMAGE_ELEM(final,uchar,i,j*3+2) = resultb.at<uchar>(i,j);
 		}
+
+	resultr.release();
+	resultg.release();
+	resultb.release();
+
+	cvReleaseImage(&grx);
+	cvReleaseImage(&gry);
+	cvReleaseImage(&gxx);
+	cvReleaseImage(&gyy);
+	cvReleaseImage(&r_channel);
+	cvReleaseImage(&rx_channel);
+	cvReleaseImage(&ry_channel);
+	cvReleaseImage(&g_channel);
+	cvReleaseImage(&gx_channel);
+	cvReleaseImage(&gy_channel);
+	cvReleaseImage(&b_channel);
+	cvReleaseImage(&bx_channel);
+	cvReleaseImage(&by_channel);
+
 
 	return final;
 

@@ -28,7 +28,8 @@ Lesser General Public License for more details.
 using namespace std;
 using namespace cv;
 
-IplImage *img0, *img1, *img2, *subimg, *result, *res, *res1, *final, *final1;
+IplImage *img0, *img1, *img2, *result, *res, *res1, *final, *final1;
+
 CvPoint point;
 int drag = 0;
 int destx, desty;
@@ -160,9 +161,10 @@ void mouseHandler(int event, int x, int y, int flags, void* param)
 
 void mouseHandler1(int event, int x, int y, int flags, void* param)
 {
-	IplImage *im, *im1;
 
 
+	IplImage *im1;
+	
 	im1 = cvCloneImage(img2);
 	if (event == CV_EVENT_LBUTTONDOWN)
 	{
@@ -203,7 +205,6 @@ void mouseHandler1(int event, int x, int y, int flags, void* param)
 			desty = y;
 
 			cvShowImage("Destination", im1);
-			cvSaveImage("dest.jpg",im1);
 		}
 	}
 	if (event == CV_EVENT_RBUTTONUP)
@@ -258,6 +259,8 @@ void mouseHandler1(int event, int x, int y, int flags, void* param)
 		cvWaitKey(0);
 		cvDestroyWindow("Blended Image");
 	}
+	
+	cvReleaseImage(&im1);
 }
 
 void checkfile(char *file)
@@ -442,6 +445,12 @@ int main(int argc, char** argv)
 
 		cvReleaseImage(&img0);
 	}
+	
+	cvReleaseImage(&res);
+	cvReleaseImage(&res1);
+	cvReleaseImage(&final);
+	cvReleaseImage(&final1);
+	cvReleaseImage(&result);
 
 	return 0;
 }
