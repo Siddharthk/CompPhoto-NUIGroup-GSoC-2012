@@ -22,3 +22,6 @@ Enter Color Image: image.jpg
 
 Output: Contrast Preserved Gray Image, OpenCV Gray Image and Contrast Boost Image
 
+Reference:
+
+"Contrast Preserving Decolorization", Cewu Lu, Li Xu, Jiaya Jia, in IEEE ICCP 2012
