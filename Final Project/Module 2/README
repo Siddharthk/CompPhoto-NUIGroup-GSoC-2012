@@ -1,0 +1,154 @@
+Description:
+
+Filtering is the fundamental operation in image and video processing.
+
+Edge-preserving smoothing filters are used in different applications.
+
+The most popular filters in this class are anisotropic diffusion and the bilateral filter.
+
+Anisotropic diffusion requires an iterative solver while bilateral filtering uses  a space-varying weighting function computed at a space of higher dimensionality than the signal being filtered. As a result, such filters have high computational costs.
+
+The technique implemented here efficiently performs edge-preserving filtering of images and videos that addresses the main limitations of previous techniques.
+
+This technique efficiently implements 2D edge-preserving smoothing filters as a sequence of 1D filtering operations. The resulting 2D filters correctly handlecolor images.
+
+Its processing time is also linear in the number of pixels and is independent of the filter parameters, allowing for realtime computations.
+
+Techniques:
+
+1) Edge Preserve Smoothing
+
+Smoothing of image while preserving edge details.
+
+Usage:
+Press 1 for Normalized Convolution Filter and 2 for Recursive Filter: 1
+
+Enter Image: image.jpg
+
+sigma_s(default val: 60): 60
+sigma_r(default val: .45): .45
+
+Output: Smoothened Image
+
+2) Detail Enhancement
+
+Detail Manipulation Edge-preserving filters can be used to decompose image details into several scales, which can be manipulated independently and recombined to produce various effects. This filter basically enhances the details of a particular image.
+
+Usage:
+Enter Image: image.jpg
+
+sigma_s(default val: 10): 10
+sigma_r(default val: .15): .15
+Scale Factor(default val: 3): 3 (ranges from 1 to 4)
+
+Output: Detail Enhanced Image
+
+3) Pencil sketch/Color Pencil Drawing
+
+This produces a pencil-like non-photorealistic drawing.
+
+Usage:
+Enter Image: image.jpg
+
+sigma_s(default val: 60): 60
+sigma_r(default val: .07): .07
+Shade_Factor(Range: .01 to .1): .04 (.01 denotes dark sketch while .1 denotes light sketch)
+
+Output: Pencil sketch Image
+
+4) Stylization
+
+Stylization aims to produce digital imagery with a wide variety of effects not focused on photorealism. Edge-aware filters are ideal for stylization, as they can abstract regions of lowcontrast while preserving, or enhancing, high-contrast features.
+
+Usage:
+Enter Image: image.jpg
+
+sigma_s(default val: 60): 60
+sigma_r(default val: .45): .4
+
+Output: Stylized Image
+
+5) Clip-Art Compression Artifact Removal
+
+The edge preserve smoothing method is also advantageous for cartoon/clip-art compression artifact removal.
+
+Usage:
+Enter Image: clip_art_artifact_image.jpg
+
+sigma_s(default val: 60): 60
+sigma_r(default val: .45): .4
+
+Output: Artifact Removed Image
+
+6) Depth of Field
+
+This is an example of joint filtering where the content of one image is smoothed based on the edge information from a second image. The resulting filter produces a unique stylized depth-of-field effect.
+
+Usage:
+Enter Image: image.jpg
+Enter Joint Image: joint_image.jpg
+
+sigma_s(default val: 20): 20
+sigma_r(default val: .2): .2
+
+Output: Depth-of-Field Image
+
+7) Edge Enhancement
+
+Edge extraction from natural images is a basic manipulation filter. Structured edges can be used for natural image editing and high-level structure inference. High quality results that are continuous, accurate, and thin are generally very difficult to produce due to high susceptibility of edge detectors to complex structures and inevitable noise. This method is able to suppress low-amplitude details and enhance edges.
+
+Usage: 
+Enter Image: image.jpg
+
+sigma_s(default val: 60): 60
+sigma_r(default val: .3): .3
+
+Output: Edge Enhanced Image
+
+------------------------------------------------------------------------------------
+
+This code has been written in C++ using OpenCV library. It has been tested on Ubuntu 12.04 64 bit linux platform.
+
+Compile: ./build.sh
+(Make sure that OpenCV-2.4 is installed on your platform)
+
+Usage: ./filter 
+
+Example Output:
+
+ Domain aware edge filter
+--------------------------
+Options:
+
+1) Edge Preserve Smoothing
+	-> Using Normalized convolution Filter
+	-> Using Recursive Filter
+2) Detail Enhancement
+3) Pencil sketch/Color Pencil Drawing
+4) Stylization
+5) Clip-Art Compression Artifact Removal
+6) Depth of Field
+7) Edge Enhancement
+
+Press number 1-7 to choose from above techniques: 1
+
+Press 1 for Normalized Convolution Filter and 2 for Recursive Filter: 1
+
+Enter Image: image.jpg
+
+sigma_s(default val: 60): 60
+sigma_r(default val: .45): .45
+
+Output: Smoothened Image
+
+sigma_s and sigma_r are gaussian spatial and range filter values.
+
+------------------------------------------------------------------------------------
+
+In folder "sample_result", smoothing results are shown by varying sigma_s and sigma_r parameters.
+
+Reference:
+
+"Domain Transform for Edge-Aware Image and Video Processing", Eduardo S. L. Gastal and Manuel M. Oliveira, Proceedings of SIGGRAPH 2011
+
+
